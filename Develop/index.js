@@ -29,11 +29,6 @@ const promptUser = () =>
     },
     {
       type: "input",
-      message: "How to install project",
-      name: "Installation"
-    },
-    {
-      type: "input",
       message: "What kind of license should your project have?",
       name: "License"
     },
@@ -61,15 +56,16 @@ const promptUser = () =>
 
 const generateREADME = (answers) =>
 `# ${answers.ProjectTitle} readme
-## Description: ${answers.Description}
-## Installation: ${answers.Installation}
-## License: ${answers.License}
-## Dependencies: ${answers.Dependencies}
-## Tests: ${answers.Tests}
-## Usage: ${answers.Usage}
-## Contribute: ${answers.Contribute}`;
+### Description: ${answers.Description}
+### Installation: ${answers.Installation}
+### License: ${answers.License}
+### Dependencies: ${answers.Dependencies}
+### Tests: ${answers.Tests}
+### Usage: ${answers.Usage}
+### Contribute: ${answers.Contribute}
+#### Github Contact:${answers.Username}, Email Contact:${answers.Email} `;
 
 promptUser()
   .then((answers) => writeFileAsync('readme.md', generateREADME(answers)))
-  .then(() => console.log('Successfully wrote to readme.md'))
+  .then(() => console.log('Successfully created your readme.md'))
   .catch((err) => console.error(err));
