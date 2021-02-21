@@ -1,57 +1,75 @@
-var inquirer = require("inquirer");
-var fs = require("fs");
-// Inquirer has method and properies including propmpt which is presented as an array where every questio is an object
+const inquirer = require('inquirer');
+const fs = require('fs');
+const util = require('util');
 
-inquirer
-    .prompt([
-      {
-        type: "input", // describes input
-        message: "What is your app used for?",// Question
-        name: "Project Overview" // variable we are going to store it in
-      },
-      {
-        type: "input",
-        message: "What was the motivation behind it?",
-        name: "Motivation"
-      },
-      {
-        type: "input",
-        message: "What technologies are used in your app?",
-        name: "Technology"
-      }
-    ]) // once all questions are answered we can use the response below. We will now need to stringify  th eobject so we can store i tin a file as a string(text file)
-    .then(function(response) {
-  
-        
+const writeFileAsync = util.promisify(fs.writeFile);
+
+const promptUser = () =>
+  inquirer.prompt([
+    {
+      type: "input", // describes input
+      message: "What is your Github username?",// Question
+      name: "Username" // variable we are going to store it in
+    },
+    {
       
-        var responseString = JSON.stringify(response);
+      type: "input", // describes input
+      message: "What us your email address?",// Question
+      name: "Email" // variable we are going to store it in
+    },
+    {
+      type: "input", // describes input
+      message: "Enter the title of your project",// Question
+      name: "ProjectTitle" // variable we are going to store it in
+    },
+    {
+      type: "input",
+      message: "Enter a description for your project",
+      name: "Description"
+    },
+    {
+      type: "input",
+      message: "How to install project",
+      name: "Installation"
+    },
+    {
+      type: "input",
+      message: "What kind of license should your project have?",
+      name: "License"
+    },
+    {
+      type: "input",
+      message: "What command should be run to install dependencies?",
+      name: "Dependencies"
+    },
+    {
+      type: "input",
+      message: "What command should be run to run tests?",
+      name: "Tests"
+    },
+    {
+      type: "input",
+      message: "What does the user need to know about using the repo?",
+      name: "Usage"
+    },
+    {
+      type: "input",
+      message: "What does the user need to know about contributing to the repo?",
+      name: "Contribute"
+    }
+  ]);
 
-        fs.writeFile("readme.md", responseString, function(err) {
-        
-          if (err) {
-            return console.log(err);
-          }
-        
-          console.log("Success!");
-        
-        });
-        
+const generateREADME = (answers) =>
+`# ${answers.ProjectTitle} readme
+## Description: ${answers.Description}
+## Installation: ${answers.Installation}
+## License: ${answers.License}
+## Dependencies: ${answers.Dependencies}
+## Tests: ${answers.Tests}
+## Usage: ${answers.Usage}
+## Contribute: ${answers.Contribute}`;
 
-
-    
-    // function to write README file goes in the response
-       // function writeToFile("readme.md", responseString) {
-       // }
-//
-    // function to initialize program
-        //function init() {
-
-        //}
-
-    // function call to initialize program
-        //init();
-    
-    console.log("Complete!");
-    });
-
-
+promptUser()
+  .then((answers) => writeFileAsync('readme.md', generateREADME(answers)))
+  .then(() => console.log('Successfully wrote to readme.md'))
+  .catch((err) => console.error(err));
